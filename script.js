@@ -1,33 +1,103 @@
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
+// объявление переменных
+let title;
+let screens;
+let screenPrice;
+let adaptive;
+let rollback = 10;
+let allServicePrices;
+let fullPrice;
+let servicePercentPrice;
+let service1;
+let service2;
+
+const isNumber = function (num) {
+  return !isNaN(parseFloat(num)) && isFinite(num);
 };
 
-const gameBot = () => {
-  let riddleNumber = getRandomInt(1, 100);
-  console.log("Загаданное число = ", riddleNumber);
+const asking = function () {
+  title = prompt("Как называется ваш проект?", "Калькулятор верстки");
+  screens = prompt(
+    " Какие типы екранов нужно разработать?",
+    "Простые, Сложные"
+  );
 
-  function goRiddle(message) {
-    let answer = prompt(message);
+  do {
+    screenPrice = prompt("Сколько будет стоить данная работа?");
+  } while (!isNumber(screenPrice));
 
-    if (answer === null) {
-      alert("Игра окончена");
-    } else if (+answer < 1 || +answer > 100) {
-      goRiddle("Введите целое число от 1 до 100");
-    } else if (+answer === riddleNumber) {
-      alert("Поздравляю, Вы угадали !!!");
-    } else if (+answer > riddleNumber) {
-      goRiddle(
-        `Загаданное число меньше ${answer.trim()}\nВведите новый вариант`
-      );
-    } else if (+answer < riddleNumber) {
-      goRiddle(
-        `Загаданное число больше ${answer.trim()}\nВведите новый вариант`
-      );
+  adaptive = confirm("Нужен ли адаптив на сайте?");
+};
+
+const getAllServicePrices = function () {
+  let sum = 0;
+
+  for (let i = 0; i < 2; i++) {
+    let price = 0;
+    if (i === 0) {
+      service1 = prompt("Какой дополнительный тип услуги нужен?");
+    } else if (i === 1) {
+      service2 = prompt("Какой дополнительный тип услуги нужен?");
     }
+
+    do {
+      price = prompt("Сколько это будет стоить?");
+    } while (!isNumber(price));
+    sum += +price;
   }
-  goRiddle("Угадай число от 1 до 100");
+
+  return sum;
 };
 
-gameBot();
+const showTypeOf = function (variable) {
+  console.log(variable, typeof variable);
+};
+
+function getFullPrice() {
+  return +screenPrice + allServicePrices;
+}
+
+const getServicePercentPrices = function () {
+  return fullPrice - fullPrice * (rollback / 100);
+};
+
+const getTitle = function () {
+  return (
+    title.trim()[0].toUpperCase() +
+    title.trim().substring(1).toLocaleLowerCase()
+  );
+};
+
+const getRollbackMessage = function (price) {
+  if (price >= 30000) {
+    return "Даем скидку в 10%";
+  } else if (price >= 15000 && price < 30000) {
+    return "Даем скидку в 5%";
+  } else if (price >= 0 && price < 15000) {
+    return "Скидка не предусмотрена";
+  } else {
+    return "Что-то пошло не так";
+  }
+};
+
+asking();
+allServicePrices = getAllServicePrices();
+fullPrice = getFullPrice();
+servicePercentPrice = getServicePercentPrices();
+title = getTitle();
+
+showTypeOf(title);
+showTypeOf(screenPrice);
+showTypeOf(adaptive);
+
+console.log("allServicePrices", allServicePrices);
+console.log(getRollbackMessage(fullPrice));
+console.log(screens.length);
+console.log(servicePercentPrice);
+
+console.log(
+  "Стоимость верстки экрана " +
+    screenPrice +
+    " юаней и Стоимость разработки сайта " +
+    fullPrice +
+    " юаней"
+);
