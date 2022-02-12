@@ -1,142 +1,53 @@
-// ссылки не элементы формы
-// - название проекта
-const hlTitle = document.getElementsByTagName("h1")[0];
-// - кнопка "Рассчитать" и "Сброс"
-let btnStart, btnReset;
-for (let btn of document.getElementsByClassName("handler_btn")) {
-  if (btn.id === "start") {
-    btnStart = btn;
-  } else if (btn.id === "reset") {
-    btnReset = btn;
-  }
-}
-// - кнопка "+" под выпадающим списком
-const btnPlus = document.querySelector(".screen-btn");
-//  - дополнительно: элемнеты-проценты и элемнеты-числa
-let itmsPersent = [],
-  itmsNumber = [];
-document.querySelectorAll(".other-items").forEach((node) => {
-  if (node.classList.contains("percent")) {
-    itmsPersent.push(node);
-  } else if (node.classList.contains("number")) {
-    itmsNumber.push(node);
-  }
-});
-// - ранжированный ввод процента отката
-const inputRollback = document.querySelector('.rollback input[type="range"]');
-// - елемент отображения текущего значение процента отката
-const valueRollback = document.querySelector(".rollback span.range-value");
-// - елементы отображения итогов
-const inputsRight = Array.from(document.getElementsByClassName("total-input"));
-// - елементы экрана
-let screens = document.querySelectorAll(".screen");
+// Урок 10 Работа с DOM
 
-console.log("1)", "hlTitle", hlTitle);
-console.log("2.1)", "btnStart", btnStart);
-console.log("2.2)", "btnReset", btnReset);
-console.log("3)", "btnPlus", btnPlus);
-console.log("4.1)", "itmsPersent", itmsPersent);
-console.log("4.2)", "itmsNumber", itmsNumber);
-console.log("5)", "inputRollback", inputRollback);
-console.log("6)", "valueRollback", valueRollback);
-console.log("7)", "inputsRight", inputsRight);
-console.log("8)", "screens", screens);
+// перечень книг
+const listBooks = document.querySelectorAll(".book");
+// body
+const elBody = document.querySelector("body");
+// реклама
+const advertising = document.querySelector(".adv");
+let newLi;
 
-// const appData = {
-//   title: "",
-//   screens: [],
-//   screenPrice: 0,
-//   adaptive: true,
-//   rollback: 10,
-//   allServicePrices: 0,
-//   fullPrice: 0,
-//   servicePercentPrice: 0,
-//   services: {},
-//   // метод start c asking и переоопределениями
-//   start: () => {
-//     appData.asking();
-//     appData.addPrices();
-//     appData.getFullPrice();
-//     appData.getServicePercentPrices();
-//     appData.getTitle();
-//     /////////Вызываем логер//////////
-//     appData.logger();
-//   },
-//   /////////////////////////////////////////
-//   ////////////////////////////////////////////////////////////
-//   asking: function () {
-//     appData.title = prompt("Как называется ваш проект?", "Калькулятор верстки");
+console.log(listBooks);
+console.log(elBody);
+console.log(advertising);
 
-//     for (let i = 0; i < 2; i++) {
-//       let name = prompt(" Какие типы экранов нужно разработать?");
-//       let price = 0;
+//1. Порядок книг
+listBooks[1].after(listBooks[0]);
+listBooks[5].after(listBooks[2]);
+listBooks[4].after(listBooks[3]);
+// Идея сортировки, потом доделать!! В названии всего одна цифра. Получить содержимое тега <h> через innerHTML. Пробить через parseInt, получить одну цифирку. Далее по цифиркам сравнение перестановка, больше меньше
 
-//       do {
-//         price = prompt("Сколько будет стоить данная работа?");
-//       } while (!appData.isNumber(price));
+//Задний фон
+elBody.style.backgroundImage = "url(./image/you-dont-know-js.jpg)";
 
-//       appData.screens.push({ id: i, name: name, price: price });
-//     }
+//Исправдение заголовка
+listBooks[4].querySelector("a").innerText =
+  "Книга 3. this и Прототипы Объектов";
 
-//     for (let i = 0; i < 2; i++) {
-//       let name = prompt("Какой дополнительный тип услуги нужен?");
-//       let price = 0;
+// Столкнулся с тем, что книга 4 по списку является книгой 3! Отсортировать порядок. Обратить внимание на compare и sort
 
-//       do {
-//         price = prompt("Сколько это будет стоить?");
-//       } while (!appData.isNumber(price));
-//       appData.services[name] = +price;
-//     }
+// 4. Реклама
+advertising.remove();
 
-//     appData.adaptive = confirm("Нужен ли адаптив на сайте?");
-//   },
-//   /////////////////////////////////////////
-//   addPrices: () => {
-//     for (let screen of appData.screens) {
-//       appData.screenPrice += +screen.price;
-//     }
-//     for (let key in appData.services) {
-//       appData.allServicePrices += appData.services[key];
-//     }
-//   },
-//   ////////////////////////////////////////////////////////////
-//   isNumber: function (num) {
-//     return !isNaN(parseFloat(num)) && isFinite(num);
-//   },
-//   ////////////////////////////////////////////////////////////
-//   /////////////////////////////////////////
-//   ////////////////////////////////////////////////////////////
-//   getFullPrice: function () {
-//     appData.fullPrice = +appData.screenPrice + appData.allServicePrices;
-//   },
-//   ////////////////////////////////////////////////////////////
-//   getServicePercentPrices: function () {
-//     appData.servicePercentPrice =
-//       appData.fullPrice - appData.fullPrice * (appData.rollback / 100);
-//   },
-//   ////////////////////////////////////////////////////////////
-//   getTitle: function () {
-//     appData.title =
-//       appData.title.trim()[0].toUpperCase() +
-//       appData.title.trim().substring(1).toLocaleLowerCase();
-//   },
-//   ////////////////////////////////////////////////////////////
-//   getRollbackMessage: function (price) {
-//     if (price >= 30000) {
-//       return "Даем скидку в 10%";
-//     } else if (price >= 15000 && price < 30000) {
-//       return "Даем скидку в 5%";
-//     } else if (price >= 0 && price < 15000) {
-//       return "Скидка не предусмотрена";
-//     } else {
-//       return "Что-то пошло не так";
-//     }
-//   },
-//   ///////////////////
-//   logger: () => {
-//     console.log(appData.fullPrice);
-//     console.log(appData.servicePercentPrice);
-//     console.log(appData.screens);
-//   },
-// };
-// appData.start();
+// // 5. восстановить порядок глав во второй и пятой книге
+// Вторая книга
+const secondBookLi = listBooks[0].querySelectorAll("li"); // ужасный костыль, глазавырывайка
+secondBookLi[9].after(secondBookLi[2]);
+secondBookLi[8].after(secondBookLi[4]);
+secondBookLi[4].after(secondBookLi[5]);
+secondBookLi[5].after(secondBookLi[7]);
+// Пятая книга (это ужасно, хочется рыдать)
+const theFifthBookLi = listBooks[5].querySelectorAll("li"); // ужасный костыль, глазавырывайка
+theFifthBookLi[4].after(theFifthBookLi[2]);
+theFifthBookLi[1].after(theFifthBookLi[9]);
+theFifthBookLi[7].after(theFifthBookLi[5]);
+
+// Добавление главы в 6 книгу
+newLi = document.createElement("li");
+newLi.innerText = "Глава 8: За пределами ES6";
+listBooks[2].append(newLi);
+const theSixthBookLi = listBooks[2].querySelectorAll("li");
+theSixthBookLi[8].after(theSixthBookLi[10]);
+console.log(theSixthBookLi);
+// мне очень за это стыдно((()))
